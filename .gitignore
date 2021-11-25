@@ -270,3 +270,4 @@ samples/openapi3/client/petstore/ruby-faraday/Gemfile.lock
 
 # Crystal
 samples/client/petstore/crystal/lib
+/gen/

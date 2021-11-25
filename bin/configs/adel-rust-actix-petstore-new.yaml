@@ -1,0 +1,6 @@
+generatorName: adel-rust-actix
+outputDir: samples/server/petstore/adel/rust/actix
+inputSpec: modules/openapi-generator/src/test/resources/3_0/petstore.yaml
+templateDir: modules/openapi-generator/src/main/resources/adel-rust-actix
+additionalProperties:
+  hideGenerationTimestamp: "true"
