@@ -1,0 +1,26 @@
+use actix_web::{HttpResponse, web};
+use serde::{Deserialize};
+{{#imports}}
+use crate::models::{{#lambda.lowercase}}{{classname}}{{/lambda.lowercase}}::{{#lambda.lowercase}}{{classname}}{{/lambda.lowercase}}::{{classname}};
+{{/imports}}
+{{#operations}}
+    {{#operation}}
+{{#queryParams}}
+#[derive(Deserialize)]
+pub struct {{operationId}}_params {
+    {{paramName}} : {{^required}}Option<{{/required}}{{dataType}}{{^required}}>{{/required}},
+}
+{{/queryParams}}
+{{#summary}}/// {{summary}}{{/summary}}
+pub async fn {{operationId}}(
+    {{#queryParams}}queryParams : web::Query<{{operationId}}_params>,{{/queryParams}}
+    {{#hasPathParams}}web::Path(({{#pathParams}}{{paramName}}{{^-last}}, {{/-last}}{{/pathParams}})) : web::Path<({{#pathParams}}{{dataType}}{{^-last}}, {{/-last}}{{/pathParams}})>,{{/hasPathParams}}
+    {{#bodyParams}}{{paramName}} : web::Json<{{dataType}}>,{{/bodyParams}}
+) -> HttpResponse
+{
+    HttpResponse::Ok().body("{{summary}} - {{operationId}}")
+}
+
+
+    {{/operation}}
+{{/operations}}

@@ -1,0 +1,14 @@
+{{#models}}
+    {{#model}}
+{{#imports}}
+use crate::models::{{#lambda.lowercase}}{{.}}{{/lambda.lowercase}}::{{#lambda.lowercase}}{{.}}{{/lambda.lowercase}}::{{.}};
+{{/imports}}
+use serde::{Deserialize,Serialize};
+#[derive(Deserialize,Serialize)]
+pub struct {{name}} {
+    {{#allVars}}
+    pub {{baseName}} : {{^required}}Option<{{/required}}{{dataType}}{{#isContainer}}<{{complexType}}>{{/isContainer}}{{^required}}>{{/required}},
+    {{/allVars}}
+}
+    {{/model}}
+{{/models}}
