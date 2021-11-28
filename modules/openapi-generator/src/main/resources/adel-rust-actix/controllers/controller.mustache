@@ -5,15 +5,17 @@ use crate::models::{{#lambda.lowercase}}{{classname}}{{/lambda.lowercase}}::{{#l
 {{/imports}}
 {{#operations}}
     {{#operation}}
-{{#queryParams}}
+{{#hasQueryParams}}
 #[derive(Deserialize)]
 pub struct {{operationId}}_params {
+    {{#queryParams}}
     {{paramName}} : {{^required}}Option<{{/required}}{{dataType}}{{^required}}>{{/required}},
+    {{/queryParams}}
 }
-{{/queryParams}}
+{{/hasQueryParams}}
 {{#summary}}/// {{summary}}{{/summary}}
 pub async fn {{operationId}}(
-    {{#queryParams}}queryParams : web::Query<{{operationId}}_params>,{{/queryParams}}
+    {{#hasQueryParams}}queryParams : web::Query<{{operationId}}_params>,{{/hasQueryParams}}
     {{#hasPathParams}}web::Path(({{#pathParams}}{{paramName}}{{^-last}}, {{/-last}}{{/pathParams}})) : web::Path<({{#pathParams}}{{dataType}}{{^-last}}, {{/-last}}{{/pathParams}})>,{{/hasPathParams}}
     {{#bodyParams}}{{paramName}} : web::Json<{{dataType}}>,{{/bodyParams}}
 ) -> HttpResponse

@@ -13,3 +13,39 @@ async fn main() -> std::io::Result<()>{
         .run()
         .await
 }
+
+#[cfg(test)]
+mod tests{
+    use actix_web::{App, test};
+    use actix_web::dev::{Body, ResponseBody};
+    use actix_web::http::header;
+    use crate::config::config_routes;
+    use crate::models;
+{{#apiInfo}}
+    {{#apis}}
+        {{#operations}}
+            {{#operation}}
+    #[actix_rt::test]
+    async fn test_{{operationId}}(){
+        let mut app = test::init_service(
+            App::new()
+                .configure(config_routes)
+        ).await;
+        let mut resp = test::TestRequest::{{#lambda.lowercase}}{{httpMethod}}{{/lambda.lowercase}}()
+            .uri("/api{{basePathWithoutHost}}{{path_test}}{{#queryParams}}{{#-first}}?{{/-first}}{{paramName}}={{test_value}}{{^-last}}&{{/-last}}{{/queryParams}}")
+            {{#hasBodyParam}}
+                {{#bodyParams}}
+            .set_json(&models::{{#lambda.lowercase}}{{dataType}}{{/lambda.lowercase}}::{{#lambda.lowercase}}{{dataType}}{{/lambda.lowercase}}::default())
+                {{/bodyParams}}
+            {{/hasBodyParam}}
+            .send_request(&mut app)
+            .await;
+        //Your assertion here
+        assert_eq!(resp.take_body().as_ref().unwrap(),&Body::from("{{summary}} - {{operationId}}"));
+    }
+
+            {{/operation}}
+        {{/operations}}
+    {{/apis}}
+{{/apiInfo}}
+}

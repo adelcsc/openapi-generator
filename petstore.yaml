@@ -190,7 +190,7 @@ components:
         total:
           type: integer
         apis:
-          type: object
+          type: array
           items:
             type: object
             properties:
