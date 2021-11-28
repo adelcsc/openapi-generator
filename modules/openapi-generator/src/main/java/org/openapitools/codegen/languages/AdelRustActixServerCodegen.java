@@ -74,8 +74,6 @@ public class AdelRustActixServerCodegen extends DefaultCodegen implements Codege
         typeMapping.put("ByteArray", bytesType);
         typeMapping.put("binary", bytesType);
         typeMapping.put("boolean", "bool");
-        typeMapping.put("date", "chrono::DateTime::<chrono::Utc>");
-        typeMapping.put("DateTime", "chrono::DateTime::<chrono::Utc>");
         typeMapping.put("password", "String");
         typeMapping.put("File", bytesType);
         typeMapping.put("file", bytesType);
@@ -134,7 +132,6 @@ public class AdelRustActixServerCodegen extends DefaultCodegen implements Codege
         instantiationTypes.clear();
         instantiationTypes.put("array", "Vec");
         instantiationTypes.put("map", "std::collections::HashMap");
-
     }
 
     @Override
@@ -149,6 +146,7 @@ public class AdelRustActixServerCodegen extends DefaultCodegen implements Codege
             return modelFileFolder() + File.separator + StringUtils.lowerCase(modelName) + File.separator  + "mod.rs";
         return modelFileFolder() + File.separator + StringUtils.lowerCase(modelName) + File.separator + StringUtils.lowerCase(modelName) + ".rs";
     }
+
 
     @Override
     public Map<String, Object> postProcessOperationsWithModels(Map<String, Object> objs, List<Object> allModels) {
