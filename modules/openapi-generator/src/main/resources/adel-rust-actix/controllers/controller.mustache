@@ -9,7 +9,7 @@ use crate::models::{{#lambda.lowercase}}{{classname}}{{/lambda.lowercase}}::{{#l
 #[derive(Deserialize)]
 pub struct {{operationId}}_params {
     {{#queryParams}}
-    {{paramName}} : {{^required}}Option<{{/required}}{{dataType}}{{^required}}>{{/required}},
+    {{paramName}} : {{^required}}Option<{{/required}}{{#isArray}}Vec<{{#items}}{{dataType}}{{/items}}>{{/isArray}}{{^isArray}}{{dataType}}{{/isArray}}{{^required}}>{{/required}},
     {{/queryParams}}
 }
 {{/hasQueryParams}}

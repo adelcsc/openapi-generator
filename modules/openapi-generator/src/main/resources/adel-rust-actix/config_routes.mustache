@@ -8,11 +8,11 @@ pub fn config_routes(cfg: &mut web::ServiceConfig){
             {{#paths.entrySet}}
             .service(
                 web::resource("{{key}}")
-                {{#value.get}}.route(web::get().to({{#value.get.tags}}{{#lambda.titlecase}}{{.}}_Controller{{/lambda.titlecase}}{{/value.get.tags}}::{{#lambda.camelcase}}{{value.get.operationId}}{{/lambda.camelcase}})){{/value.get}}
-                {{#value.post}}.route(web::post().to({{#value.post.tags}}{{#lambda.titlecase}}{{.}}_Controller{{/lambda.titlecase}}{{/value.post.tags}}::{{#lambda.camelcase}}{{value.post.operationId}}{{/lambda.camelcase}})){{/value.post}}
-                {{#value.patch}}.route(web::patch().to({{#value.patch.tags}}{{#lambda.titlecase}}{{.}}_Controller{{/lambda.titlecase}}{{/value.patch.tags}}::{{#lambda.camelcase}}{{value.patch.operationId}}{{/lambda.camelcase}})){{/value.patch}}
-                {{#value.delete}}.route(web::delete().to({{#value.delete.tags}}{{#lambda.titlecase}}{{.}}_Controller{{/lambda.titlecase}}{{/value.delete.tags}}::{{#lambda.camelcase}}{{value.delete.operationId}}{{/lambda.camelcase}})){{/value.delete}}
-                {{#value.put}}.route(web::put().to({{#value.put.tags}}{{#lambda.titlecase}}{{.}}_Controller{{/lambda.titlecase}}{{/value.put.tags}}::{{#lambda.camelcase}}{{value.put.operationId}}{{/lambda.camelcase}})){{/value.put}}
+            {{#value.get}}.route(web::get().to({{#value.get.tags}}{{#lambda.titlecase}}{{.}}_Controller{{/lambda.titlecase}}{{/value.get.tags}}{{^value.get.tags}}Default_Controller{{/value.get.tags}}::{{#lambda.camelcase}}{{value.get.operationId}}{{^value.get.operationId}}{{key}}Get{{/value.get.operationId}}{{/lambda.camelcase}})){{/value.get}}
+                {{#value.post}}.route(web::post().to({{#value.post.tags}}{{#lambda.titlecase}}{{.}}_Controller{{/lambda.titlecase}}{{/value.post.tags}}{{^value.post.tags}}Default_Controller{{/value.post.tags}}::{{#lambda.camelcase}}{{value.post.operationId}}{{^value.post.operationId}}{{key}}Post{{/value.post.operationId}}{{/lambda.camelcase}})){{/value.post}}
+                {{#value.patch}}.route(web::patch().to({{#value.patch.tags}}{{#lambda.titlecase}}{{.}}_Controller{{/lambda.titlecase}}{{/value.patch.tags}}{{^value.patch.tags}}Default_Controller{{/value.patch.tags}}::{{#lambda.camelcase}}{{value.patch.operationId}}{{^value.patch.operationId}}{{key}}Patch{{/value.patch.operationId}}{{/lambda.camelcase}})){{/value.patch}}
+                {{#value.delete}}.route(web::delete().to({{#value.delete.tags}}{{#lambda.titlecase}}{{.}}_Controller{{/lambda.titlecase}}{{/value.delete.tags}}{{^value.delete.tags}}Default_Controller{{/value.delete.tags}}::{{#lambda.camelcase}}{{value.delete.operationId}}{{^value.delete.operationId}}{{key}}Delete{{/value.delete.operationId}}{{/lambda.camelcase}})){{/value.delete}}
+                {{#value.put}}.route(web::put().to({{#value.put.tags}}{{#lambda.titlecase}}{{.}}_Controller{{/lambda.titlecase}}{{/value.put.tags}}{{^value.put.tags}}Default_Controller{{/value.put.tags}}::{{#lambda.camelcase}}{{value.put.operationId}}{{^value.put.operationId}}{{key}}Put{{/value.put.operationId}}{{/lambda.camelcase}})){{/value.put}}
             )
             {{/paths.entrySet}}
         );
