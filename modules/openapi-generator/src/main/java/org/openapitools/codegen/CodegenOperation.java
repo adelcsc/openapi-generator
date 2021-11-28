@@ -32,7 +32,7 @@ public class CodegenOperation {
             isRestful, isDeprecated, isCallbackRequest, uniqueItems, hasDefaultResponse = false,
             hasErrorResponseObject; // if 4xx, 5xx repsonses have at least one error object defined
     public String path, operationId, returnType, returnFormat, httpMethod, returnBaseType,
-            returnContainer, summary, unescapedNotes, notes, baseName, defaultResponse;
+            returnContainer, summary, unescapedNotes, notes, baseName, defaultResponse,path_test;
     public CodegenDiscriminator discriminator;
     public List<Map<String, String>> consumes, produces, prioritizedContentTypes;
     public List<CodegenServer> servers = new ArrayList<CodegenServer>();

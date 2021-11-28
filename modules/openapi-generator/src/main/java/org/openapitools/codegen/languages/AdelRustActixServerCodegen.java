@@ -4,6 +4,7 @@ import com.samskivert.mustache.BasicCollector;
 import com.samskivert.mustache.DefaultCollector;
 import com.samskivert.mustache.Mustache;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.media.ComposedSchema;
 import org.openapitools.codegen.*;
 import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.MapProperty;
@@ -23,7 +24,7 @@ import org.slf4j.LoggerFactory;
 public class AdelRustActixServerCodegen extends DefaultCodegen implements CodegenConfig {
     private static final String uuidType = "uuid::Uuid";
     private static final String bytesType = "swagger::ByteArray";
-
+    private List<String> tags = new ArrayList<>();
     public static final String PROJECT_NAME = "projectName";
 
     static final Logger LOGGER = LoggerFactory.getLogger(AdelRustActixServerCodegen.class);
@@ -142,15 +143,6 @@ public class AdelRustActixServerCodegen extends DefaultCodegen implements Codege
     }
 
     @Override
-    public void processOpenAPI(OpenAPI openAPI) {
-        super.processOpenAPI(openAPI);
-        List<String> tags = new ArrayList<>();
-        openAPI.getTags().forEach(tag -> tags.add(tag.getName()));
-        additionalProperties.put("adel_tags",tags);
-    }
-
-
-    @Override
     public String modelFilename(String templateName, String modelName) {
         LOGGER.info("it is generating");
         if(templateName.equals("models"+File.separator+"mod.mustache"))
@@ -158,4 +150,46 @@ public class AdelRustActixServerCodegen extends DefaultCodegen implements Codege
         return modelFileFolder() + File.separator + StringUtils.lowerCase(modelName) + File.separator + StringUtils.lowerCase(modelName) + ".rs";
     }
 
+    @Override
+    public Map<String, Object> postProcessOperationsWithModels(Map<String, Object> objs, List<Object> allModels) {
+        HashMap<String, Object> operations = (HashMap<String, Object>) objs.get("operations");
+        ArrayList<CodegenOperation> operation = (ArrayList<CodegenOperation>) operations.get("operation");
+
+        for(CodegenOperation logo : operation) {
+            logo.tags.forEach(tag -> {
+                if(!tags.contains(tag.getName()))
+                    tags.add(tag.getName());
+            });
+            logo.path_test=logo.path;
+            for (CodegenParameter de : logo.pathParams)
+                if (de.isString)
+                    logo.path_test = logo.path_test.replace("{"+de.paramName+"}","RandomString");
+                else
+                    logo.path_test = logo.path_test.replace("{"+de.paramName+"}","5478");
+            for(CodegenParameter de : logo.queryParams)
+                if(de.isString)
+                    de.test_value="HelloWorld";
+                else
+                    de.test_value="546";
+        }
+        additionalProperties.put("adel_tags",tags);
+
+        return super.postProcessOperationsWithModels(objs, allModels);
+    }
+
+    @Override
+    public Map<String, Object> postProcessAllModels(Map<String, Object> objs) {
+        objs.keySet().forEach(s -> {
+            if(s.contains("_allOf"))
+                objs.remove(s);
+        });
+        Map<String, CodegenModel> allModels = this.getAllModels(objs);
+        allModels.forEach((s, codegenModel) -> {
+            codegenModel.imports.forEach(s1 -> {
+                if(s1.contains("AllOf"))
+                    codegenModel.imports.remove(s1);
+            });
+        });
+        return super.postProcessAllModels(objs);
+    }
 }

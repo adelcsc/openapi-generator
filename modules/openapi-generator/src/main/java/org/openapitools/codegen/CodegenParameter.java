@@ -29,7 +29,7 @@ public class CodegenParameter implements IJsonSchemaValidationProperties {
             isCookieParam, isBodyParam, isContainer,
             isCollectionFormatMulti, isPrimitiveType, isModel, isExplode, isDeepObject, isAllowEmptyValue;
     public String baseName, paramName, dataType, datatypeWithEnum, dataFormat, contentType,
-            collectionFormat, description, unescapedDescription, baseType, defaultValue, enumName, style;
+            collectionFormat, description, unescapedDescription, baseType, defaultValue, enumName, style,test_value;
 
     public String nameInLowerCase; // property name in lower case
     public String example; // example value (x-example)
@@ -158,6 +158,7 @@ public class CodegenParameter implements IJsonSchemaValidationProperties {
         output.pattern = this.pattern;
         output.additionalProperties = this.additionalProperties;
         output.isNull = this.isNull;
+        output.test_value = this.test_value;
         output.setAdditionalPropertiesIsAnyType(this.getAdditionalPropertiesIsAnyType());
         output.setHasVars(this.hasVars);
         output.setHasRequired(this.hasRequired);

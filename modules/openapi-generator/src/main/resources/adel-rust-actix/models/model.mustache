@@ -1,14 +1,21 @@
 {{#models}}
     {{#model}}
 {{#imports}}
-use crate::models::{{#lambda.lowercase}}{{.}}{{/lambda.lowercase}}::{{#lambda.lowercase}}{{.}}{{/lambda.lowercase}}::{{.}};
+use crate::models::{{#lambda.lowercase}}{{.}}{{/lambda.lowercase}}::{{#lambda.lowercase}}{{.}}{{/lambda.lowercase}};
 {{/imports}}
 use serde::{Deserialize,Serialize};
 #[derive(Deserialize,Serialize)]
 pub struct {{name}} {
     {{#allVars}}
-    pub {{baseName}} : {{^required}}Option<{{/required}}{{dataType}}{{#isContainer}}<{{complexType}}>{{/isContainer}}{{^required}}>{{/required}},
+    pub {{baseName}} : {{^required}}Option<{{/required}}{{dataType}}{{#isContainer}}<{{#lambda.lowercase}}{{complexType}}{{/lambda.lowercase}}::{{complexType}}>{{/isContainer}}{{^required}}>{{/required}},
     {{/allVars}}
+}
+pub fn default() -> {{name}}{
+    {{name}} {
+        {{#allVars}}
+            {{baseName}} : {{^required}}Some({{#isArray}}vec![{{/isArray}}{{/required}}{{#isNumeric}}54{{/isNumeric}}{{#isString}}"RandomString".to_string(){{/isString}}{{#isContainer}}{{#lambda.lowercase}}{{complexType}}{{/lambda.lowercase}}::default(){{/isContainer}}{{#isArray}}]{{/isArray}}{{^required}}){{/required}},
+        {{/allVars}}
+    }
 }
     {{/model}}
 {{/models}}
