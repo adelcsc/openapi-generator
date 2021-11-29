@@ -1,58 +1,45 @@
-openapi: 3.0.0
-info:
-  title: Callback Example
+openapi : 3.0.0
+info :
+  title: User Repo
+  description: This is an API Back-end for user registration
+  contact:
+    name: Adel Benhamida
+    email: a.benhamida.del@gmail.com
   version: 1.0.0
+servers:
+  - url: http://127.0.0.1:8080/v1
+    description: this for Local Development
 paths:
-  /streams/papa:
+  /auth/login:
     post:
-      description: subscribes a client to receive out-of-band data
-      parameters:
-        - name: callbackUrl
-          in: query
-          required: true
-          description: yes
-          schema:
-            type: string
-            format: uri
-            example: https://tonys-server.com
+      summary: This endpoint is for user login
+      operationId: loginUser
+      tags:
+        - auth
+
       responses:
-        '201':
-          description: subscription successfully created
+        200:
+          description: this is in case of sucess login
           content:
-            application/json:
+            application/text:
               schema:
-                description: subscription information
-                required:
-                  - subscriptionId
-                properties:
-                  subscriptionId:
-                    description: this unique identifier allows management of the subscription
-                    type: string
-                    example: 2531329f-fb09-4ef7-887e-84e648214436
-      callbacks:
-        # the name `onData` is a convenience locator
-        onData:
-          # when data is sent, it will be sent to the `callbackUrl` provided
-          # when making the subscription PLUS the suffix `/data`
-          '{$request.query.callbackUrl}/data':
-            post:
-              requestBody:
-                description: subscription payload
-                content:
-                  application/json:
-                    schema:
-                      type: object
-                      properties:
-                        timestamp:
-                          type: string
-                        userData:
-                          type: string
-              responses:
-                '202':
-                  description: |
-                    Your server implementation should return this HTTP status code
-                    if the data was received successfully
-                '204':
-                  description: |
-                    Your server should return this HTTP status code if no longer interested
-                    in further updates
+                type : string
+
+components:
+  schemas:
+    adel:
+      properties:
+        id :
+          type: integer
+  requestBodies:
+    LoginRequest:
+      content:
+        application/json:
+          schema:
+            title : LoginRequest
+            type: object
+            properties:
+              username:
+                title : username
+                type : string
+

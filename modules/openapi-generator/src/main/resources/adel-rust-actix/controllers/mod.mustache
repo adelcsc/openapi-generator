@@ -1,3 +1,13 @@
 {{#adel_tags}}
 pub mod {{#lambda.titlecase}}{{.}}_Controller{{/lambda.titlecase}};
 {{/adel_tags}}
+{{#openAPI}}
+    {{#components}}
+        {{#responses}}
+pub mod responses;
+        {{/responses}}
+        {{#requestBodies}}
+pub mod requests;
+        {{/requestBodies}}
+    {{/components}}
+{{/openAPI}}
