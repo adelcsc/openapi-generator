@@ -170,6 +170,10 @@ public class AdelRustActixServerCodegen extends DefaultCodegen implements Codege
         ArrayList<CodegenOperation> operation = (ArrayList<CodegenOperation>) operations.get("operation");
 
         for(CodegenOperation logo : operation) {
+            if(logo.responses!=null)
+                logo.responses.forEach(codegenResponse -> {
+                    codegenResponse.dataType=codegenResponse.baseType=codegenResponse.message;
+                });
             logo.tags.forEach(tag -> {
                 if(!tags.contains(tag.getName()))
                     tags.add(tag.getName());
@@ -224,10 +228,12 @@ public class AdelRustActixServerCodegen extends DefaultCodegen implements Codege
 
     @Override
     public Map<String, Object> postProcessAllModels(Map<String, Object> objs) {
+        ArrayList<String> tobeRemoved = new ArrayList<>();
         objs.keySet().forEach(s -> {
-            if(s.contains("_allOf"))
-                objs.remove(s);
+            if(s.contains("_allOf")||s.contains("inline_"))
+                tobeRemoved.add(s);
         });
+        tobeRemoved.forEach(s -> objs.remove(s));
         Map<String, CodegenModel> allModels = this.getAllModels(objs);
         allModels.forEach((s, codegenModel) -> {
             //Set Import Paths

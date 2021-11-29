@@ -19,11 +19,7 @@ paths:
 
       responses:
         200:
-          description: this is in case of sucess login
-          content:
-            application/text:
-              schema:
-                type : string
+          $ref: '#/components/responses/ErrorResponse'
 
 components:
   schemas:
@@ -41,5 +37,29 @@ components:
             properties:
               username:
                 title : username
+                type : string
+  responses:
+    ErrorResponse :
+      description : ErrorResponse
+
+      content:
+        application/json:
+          schema:
+            type : object
+            properties :
+              status :
+                type : string
+              msg :
+                type : string
+    Mido :
+      description : This is an error response when something is wrong
+      content:
+        application/json:
+          schema:
+            type : object
+            properties :
+              status :
+                type : string
+              msg :
                 type : string
 
