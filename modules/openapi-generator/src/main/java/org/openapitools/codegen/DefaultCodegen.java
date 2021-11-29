@@ -6308,6 +6308,7 @@ public class DefaultCodegen implements CodegenConfig {
 
     protected void addBodyModelSchema(CodegenParameter codegenParameter, String name, Schema schema, Set<String> imports, String bodyParameterName, boolean forceSimpleRef) {
         CodegenModel codegenModel = null;
+        name = schema.getTitle();
         if (StringUtils.isNotBlank(name)) {
             schema.setName(name);
             codegenModel = fromModel(name, schema);

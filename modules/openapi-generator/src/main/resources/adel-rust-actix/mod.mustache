@@ -1,5 +1,5 @@
 {{#models}}
-{{#model}}
-pub mod {{#lambda.lowercase}}{{name}}{{/lambda.lowercase}};
-{{/model}}
+    {{#model}}
+{{^isRequest}}{{^isResponse}}pub mod {{#lambda.lowercase}}{{name}}{{/lambda.lowercase}};{{/isResponse}}{{/isRequest}}
+    {{/model}}
 {{/models}}

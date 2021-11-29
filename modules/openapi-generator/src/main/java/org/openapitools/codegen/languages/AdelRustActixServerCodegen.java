@@ -4,7 +4,7 @@ import com.samskivert.mustache.BasicCollector;
 import com.samskivert.mustache.DefaultCollector;
 import com.samskivert.mustache.Mustache;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.media.ComposedSchema;
+import io.swagger.v3.oas.models.media.*;
 import org.openapitools.codegen.*;
 import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.MapProperty;
@@ -38,7 +38,7 @@ public class AdelRustActixServerCodegen extends DefaultCodegen implements Codege
     }
 
     public String getHelp() {
-        return "Generates a adel-rust-actix server.";
+        return "Generates an adel-rust-actix server.";
     }
 
     public AdelRustActixServerCodegen() {
@@ -47,6 +47,7 @@ public class AdelRustActixServerCodegen extends DefaultCodegen implements Codege
         modelTemplateFiles.put("models"+File.separator+"model.mustache", ".rs");
         modelTemplateFiles.put("models"+File.separator+"mod.mustache",".rs");
         apiTemplateFiles.put("controllers"+File.separator+"controller.mustache", ".rs");
+        apiTemplateFiles.put("service_mod.mustache", ".rs");
         embeddedTemplateDir = templateDir = "adel-rust-actix";
         apiPackage = "src"+File.separator+"controllers";
         modelPackage = "src"+File.separator+"models";
@@ -58,7 +59,7 @@ public class AdelRustActixServerCodegen extends DefaultCodegen implements Codege
         supportingFiles.add(new SupportingFile("controllers"+File.separator+"mod.mustache",apiPackage,"mod.rs"));
         supportingFiles.add(new SupportingFile("config_routes.mustache","","src"+File.separator+"config"+File.separator+"mod.rs"));
         supportingFiles.add(new SupportingFile("services.mustache","","src"+File.separator+"services"+File.separator+"mod.rs"));
-
+        supportingFiles.add(new SupportingFile("ignore.mustache","",".openapi-generator-ignore"));
 
         //Mapping Types
         typeMapping.clear();
@@ -141,12 +142,27 @@ public class AdelRustActixServerCodegen extends DefaultCodegen implements Codege
 
     @Override
     public String modelFilename(String templateName, String modelName) {
-        LOGGER.info("it is generating");
+        if(modelName.contains("Response")) {
+            if(templateName.equals("models"+File.separator+"mod.mustache"))
+                return apiFileFolder() + File.separator + "responses" + File.separator  + "mod.rs";
+            return apiFileFolder() + File.separator + "responses" + File.separator + modelName + ".rs";
+        }
+        if(modelName.contains("Request")) {
+            if(templateName.equals("models"+File.separator+"mod.mustache"))
+                return apiFileFolder() + File.separator + "requests" + File.separator  + "mod.rs";
+            return apiFileFolder() + File.separator + "requests" + File.separator + modelName + ".rs";
+        }
         if(templateName.equals("models"+File.separator+"mod.mustache"))
             return modelFileFolder() + File.separator + StringUtils.lowerCase(modelName) + File.separator  + "mod.rs";
         return modelFileFolder() + File.separator + StringUtils.lowerCase(modelName) + File.separator + StringUtils.lowerCase(modelName) + ".rs";
     }
 
+    @Override
+    public String apiFilename(String templateName, String tag) {
+        if(templateName.equals("service_mod.mustache"))
+            return outputFolder+File.separator+"src"+File.separator+"services"+File.separator+tag+"_Service.rs";
+        return super.apiFilename(templateName, tag);
+    }
 
     @Override
     public Map<String, Object> postProcessOperationsWithModels(Map<String, Object> objs, List<Object> allModels) {
@@ -158,6 +174,7 @@ public class AdelRustActixServerCodegen extends DefaultCodegen implements Codege
                 if(!tags.contains(tag.getName()))
                     tags.add(tag.getName());
             });
+            //Set Path test example
             logo.path_test=logo.path;
             for (CodegenParameter de : logo.pathParams)
                 if (de.isString)
@@ -176,6 +193,36 @@ public class AdelRustActixServerCodegen extends DefaultCodegen implements Codege
     }
 
     @Override
+    public String toApiImport(String name) {
+        return super.toApiImport(name);
+    }
+
+    @Override
+    public String toModelImport(String name) {
+        if (name.contains("Response"))
+            return "crate::controllers::responses::"+name;
+        if(name.contains("Request"))
+            return "crate::controllers::requests::"+name;
+        return "crate::models::"+name.toLowerCase()+"::"+name.toLowerCase()+"::"+name;
+    }
+
+    @Override
+    public void processOpenAPI(OpenAPI openAPI) {
+        //Include Request bodies into models
+        if(openAPI.getComponents().getRequestBodies()!=null)
+            openAPI.getComponents().getRequestBodies().forEach((requestName, requestBody) -> {
+                if(openAPI.getComponents().getSchemas()!=null)
+                    openAPI.getComponents().getSchemas().put(requestName.contains("Request")?requestName:requestName+"Request",requestBody.getContent().get("application/json").getSchema());
+            });
+        //Include Responses into models
+        if(openAPI.getComponents().getResponses()!=null)
+            openAPI.getComponents().getResponses().forEach((responseName, apiResponse) -> {
+                openAPI.getComponents().getSchemas().put(responseName.contains("Response")?responseName:responseName+"Response",apiResponse.getContent().get("application/json").getSchema());
+            });
+        super.processOpenAPI(openAPI);
+    }
+
+    @Override
     public Map<String, Object> postProcessAllModels(Map<String, Object> objs) {
         objs.keySet().forEach(s -> {
             if(s.contains("_allOf"))
@@ -183,10 +230,21 @@ public class AdelRustActixServerCodegen extends DefaultCodegen implements Codege
         });
         Map<String, CodegenModel> allModels = this.getAllModels(objs);
         allModels.forEach((s, codegenModel) -> {
+            //Set Import Paths
+
+            //Remove Inheretance imports
             codegenModel.imports.forEach(s1 -> {
                 if(s1.contains("AllOf"))
                     codegenModel.imports.remove(s1);
             });
+
+            // Set Request bodies param to true
+            if(codegenModel.name.contains("Request"))
+                codegenModel.isRequest=true;
+
+            //Set Responses param to true
+            if(codegenModel.name.contains("Response"))
+                codegenModel.isResponse=true;
         });
         return super.postProcessAllModels(objs);
     }
