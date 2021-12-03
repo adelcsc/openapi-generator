@@ -197,17 +197,19 @@ public class AdelRustActixServerCodegen extends DefaultCodegen implements Codege
     }
 
     @Override
-    public String toApiImport(String name) {
-        return super.toApiImport(name);
-    }
-
-    @Override
     public String toModelImport(String name) {
         if (name.contains("Response"))
             return "crate::controllers::responses::"+name;
         if(name.contains("Request"))
             return "crate::controllers::requests::"+name;
         return "crate::models::"+name.toLowerCase()+"::"+name.toLowerCase()+"::"+name;
+    }
+
+    @Override
+    protected boolean needToImport(String type) {
+        if(type.contains("inline_"))
+            return false;
+        return super.needToImport(type);
     }
 
     @Override
@@ -233,7 +235,7 @@ public class AdelRustActixServerCodegen extends DefaultCodegen implements Codege
             if(s.contains("_allOf")||s.contains("inline_"))
                 tobeRemoved.add(s);
         });
-        tobeRemoved.forEach(s -> objs.remove(s));
+        tobeRemoved.forEach(objs::remove);
         Map<String, CodegenModel> allModels = this.getAllModels(objs);
         allModels.forEach((s, codegenModel) -> {
             //Set Import Paths
