@@ -16,10 +16,11 @@ paths:
       operationId: loginUser
       tags:
         - auth
-
+      requestBody:
+        $ref: '#/components/requestBodies/LoginRequest'
       responses:
-        200:
-          $ref: '#/components/responses/ErrorResponse'
+        default:
+          description: this is not
 
 components:
   schemas:
@@ -38,28 +39,17 @@ components:
               username:
                 title : username
                 type : string
+              password :
+                type : string
   responses:
-    ErrorResponse :
-      description : ErrorResponse
-
+    ServerResponse:
+      description: ServerResponse
       content:
-        application/json:
+        application/json :
           schema:
-            type : object
+            type: object
             properties :
-              status :
-                type : string
-              msg :
-                type : string
-    Mido :
-      description : This is an error response when something is wrong
-      content:
-        application/json:
-          schema:
-            type : object
-            properties :
-              status :
-                type : string
-              msg :
-                type : string
-
+              data:
+                type : object
+              code :
+                type : integer

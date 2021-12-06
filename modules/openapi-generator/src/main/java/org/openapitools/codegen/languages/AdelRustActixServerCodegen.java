@@ -199,9 +199,9 @@ public class AdelRustActixServerCodegen extends DefaultCodegen implements Codege
     @Override
     public String toModelImport(String name) {
         if (name.contains("Response"))
-            return "crate::controllers::responses::"+name;
+            return "crate::controllers::responses::"+StringUtils.lowerCase(name)+"::"+name;
         if(name.contains("Request"))
-            return "crate::controllers::requests::"+name;
+            return "crate::controllers::requests::"+StringUtils.lowerCase(name)+"::"+name;
         return "crate::models::"+name.toLowerCase()+"::"+name.toLowerCase()+"::"+name;
     }
 
