@@ -14,7 +14,7 @@ impl {{name}} {
     pub fn default() -> {{name}}{
     {{name}} {
     {{#allVars}}
-        {{baseName}} : {{^required}}Some({{#isArray}}vec![{{/isArray}}{{/required}}{{#isNumeric}}54{{/isNumeric}}{{#isString}}"RandomString".to_string(){{/isString}}{{#isContainer}}{{complexType}}::default(){{/isContainer}}{{#isArray}}]{{/isArray}}{{^required}}){{/required}},
+        {{baseName}} : {{^required}}Some({{#isArray}}vec![{{/isArray}}{{/required}}{{#isNumeric}}54{{/isNumeric}}{{#isString}}"RandomString".to_string(){{/isString}}{{#isContainer}}{{complexType}}::default(){{/isContainer}}{{#isFreeFormObject}}serde_json::from_str("{}").unwrap(){{/isFreeFormObject}}{{#isArray}}]{{/isArray}}{{^required}}){{/required}},
     {{/allVars}}
         }
     }

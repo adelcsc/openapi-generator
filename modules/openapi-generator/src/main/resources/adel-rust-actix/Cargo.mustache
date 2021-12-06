@@ -10,3 +10,6 @@ serde = "1.0.130"
 serde_json = "1.0.72"
 uuid = "0.8.2"
 actix-rt = "2.5.0"
+diesel = {version="1.4.8",features=["postgres"]}
+casbin = {version = "2.0.9",default-features=false,features = ["runtime-async-std","logging","incremental"]}
+tokio = {version = "1.14.0",features = ["fs","io-util"]}

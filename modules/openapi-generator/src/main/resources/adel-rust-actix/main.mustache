@@ -21,6 +21,7 @@ mod tests{
     use actix_web::http::header;
     use crate::config::config_routes;
     use crate::models;
+    use crate::controllers;
 {{#apiInfo}}
     {{#apis}}
         {{#operations}}
@@ -35,7 +36,7 @@ mod tests{
             .uri("/api{{basePathWithoutHost}}{{path_test}}{{#queryParams}}{{#-first}}?{{/-first}}{{paramName}}={{test_value}}{{^-last}}&{{/-last}}{{/queryParams}}")
             {{#hasBodyParam}}
                 {{#bodyParams}}
-            .set_json(&models::{{#lambda.lowercase}}{{dataType}}{{/lambda.lowercase}}::{{#lambda.lowercase}}{{dataType}}{{/lambda.lowercase}}::default())
+            .set_json(&controllers::requests::{{#lambda.lowercase}}{{dataType}}{{/lambda.lowercase}}::{{dataType}}::default())
                 {{/bodyParams}}
             {{/hasBodyParam}}
             .send_request(&mut app)
