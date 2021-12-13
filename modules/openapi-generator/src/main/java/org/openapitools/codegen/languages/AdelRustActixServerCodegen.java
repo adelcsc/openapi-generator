@@ -145,12 +145,12 @@ public class AdelRustActixServerCodegen extends DefaultCodegen implements Codege
         if(modelName.contains("Response")) {
             if(templateName.equals("models"+File.separator+"mod.mustache"))
                 return apiFileFolder() + File.separator + "responses" + File.separator  + "mod.rs";
-            return apiFileFolder() + File.separator + "responses" + File.separator + modelName + ".rs";
+            return apiFileFolder() + File.separator + "responses" + File.separator + modelName.toLowerCase() + ".rs";
         }
         if(modelName.contains("Request")) {
             if(templateName.equals("models"+File.separator+"mod.mustache"))
                 return apiFileFolder() + File.separator + "requests" + File.separator  + "mod.rs";
-            return apiFileFolder() + File.separator + "requests" + File.separator + modelName + ".rs";
+            return apiFileFolder() + File.separator + "requests" + File.separator + modelName.toLowerCase() + ".rs";
         }
         if(templateName.equals("models"+File.separator+"mod.mustache"))
             return modelFileFolder() + File.separator + StringUtils.lowerCase(modelName) + File.separator  + "mod.rs";
