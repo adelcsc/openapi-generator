@@ -18,6 +18,7 @@ pub async fn {{operationId}}(
     {{#hasQueryParams}}queryParams : web::Query<{{operationId}}_params>,{{/hasQueryParams}}
     {{#hasPathParams}}web::Path(({{#pathParams}}{{paramName}}{{^-last}}, {{/-last}}{{/pathParams}})) : web::Path<({{#pathParams}}{{dataType}}{{^-last}}, {{/-last}}{{/pathParams}})>,{{/hasPathParams}}
     {{#bodyParams}}{{paramName}} : web::Json<{{dataType}}>,{{/bodyParams}}
+    db: web::Data<sqlx::Pool<sqlx::sqlite::Sqlite>>
 ) -> HttpResponse
 {
     HttpResponse::Ok().body("{{summary}} - {{operationId}}")
